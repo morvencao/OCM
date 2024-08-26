@@ -114,15 +114,20 @@ func (m *ManifestWorkFinalizeController) sync(ctx context.Context, controllerCon
 }
 
 func (m *ManifestWorkFinalizeController) deleteAppliedManifestWork(ctx context.Context, appliedManifestWorkName string) error {
+	klog.Infof("========== Deleting AppliedManifestWork %q", appliedManifestWorkName)
 	appliedManifestWork, err := m.appliedManifestWorkLister.Get(appliedManifestWorkName)
 	switch {
 	case errors.IsNotFound(err):
+		klog.Infof("======= AppliedManifestWork %q not found", appliedManifestWorkName)
 		return nil
 	case err != nil:
+		klog.Infof("======= Failed to get AppliedManifestWork %q: %v", appliedManifestWorkName, err)
 		return err
 	case !appliedManifestWork.DeletionTimestamp.IsZero():
+		klog.Infof("======= AppliedManifestWork %q is already being deleted", appliedManifestWorkName)
 		return nil
 	}
 
+	klog.Infof("======= Starting deleting AppliedManifestWork %q", appliedManifestWorkName)
 	return m.appliedManifestWorkClient.Delete(ctx, appliedManifestWorkName, metav1.DeleteOptions{})
 }

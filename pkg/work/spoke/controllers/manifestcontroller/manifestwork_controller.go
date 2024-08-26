@@ -246,12 +246,14 @@ func (m *ManifestWorkController) applyAppliedManifestWork(ctx context.Context, w
 	appliedManifestWork, err := m.appliedManifestWorkLister.Get(appliedManifestWorkName)
 	switch {
 	case apierrors.IsNotFound(err):
+		klog.Infof("=========== Creating AppliedManifestWork %s", appliedManifestWorkName)
 		return m.appliedManifestWorkClient.Create(ctx, requiredAppliedWork, metav1.CreateOptions{})
 
 	case err != nil:
 		return nil, err
 	}
 
+	klog.Infof("=========== Updating AppliedManifestWork %s", appliedManifestWorkName)
 	_, err = m.appliedManifestWorkPatcher.PatchSpec(ctx, appliedManifestWork, requiredAppliedWork.Spec, appliedManifestWork.Spec)
 	return appliedManifestWork, err
 }
