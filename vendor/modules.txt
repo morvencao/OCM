@@ -1799,6 +1799,8 @@ open-cluster-management.io/sdk-go/pkg/cloudevents/generic/options/kafka
 open-cluster-management.io/sdk-go/pkg/cloudevents/generic/options/mqtt
 open-cluster-management.io/sdk-go/pkg/cloudevents/generic/payload
 open-cluster-management.io/sdk-go/pkg/cloudevents/generic/types
+open-cluster-management.io/sdk-go/pkg/cloudevents/server
+open-cluster-management.io/sdk-go/pkg/cloudevents/server/grpc
 open-cluster-management.io/sdk-go/pkg/cloudevents/work
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/agent/client
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/agent/codec
