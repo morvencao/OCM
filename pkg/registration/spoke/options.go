@@ -41,6 +41,9 @@ type SpokeAgentOptions struct {
 	HubClusterArn               string
 	ManagedClusterArn           string
 	ManagedClusterRoleSuffix    string
+
+	HubRegistrationDriver string
+	HubBootstrapConfig    string
 }
 
 func NewSpokeAgentOptions() *SpokeAgentOptions {
@@ -50,6 +53,7 @@ func NewSpokeAgentOptions() *SpokeAgentOptions {
 		ClusterHealthCheckPeriod:    1 * time.Minute,
 		MaxCustomClusterClaims:      20,
 		HubConnectionTimeoutSeconds: 600, // by default, the timeout is 10 minutes
+		HubRegistrationDriver:       "kube",
 	}
 
 	return options
@@ -87,6 +91,11 @@ func (o *SpokeAgentOptions) AddFlags(fs *pflag.FlagSet) {
 		"The ARN of the EKS based managed cluster.")
 	fs.StringVar(&o.ManagedClusterRoleSuffix, "managed-cluster-role-suffix", o.ManagedClusterRoleSuffix,
 		"The suffix of the managed cluster IAM role.")
+
+	fs.StringVar(&o.HubRegistrationDriver, "hub-registration-driver", o.HubRegistrationDriver,
+		"The type of registration driver to use to register with hub, kube or grpc.")
+	fs.StringVar(&o.HubBootstrapConfig, "hub-bootstrap-config", o.HubBootstrapConfig,
+		"The path of the bootstrap config file for hub registration.")
 }
 
 // Validate verifies the inputs.

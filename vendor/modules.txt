@@ -1777,7 +1777,7 @@ open-cluster-management.io/api/operator/v1
 open-cluster-management.io/api/utils/work/v1/workapplier
 open-cluster-management.io/api/work/v1
 open-cluster-management.io/api/work/v1alpha1
-# open-cluster-management.io/sdk-go v0.15.1-0.20241125015855-1536c3970f8f => github.com/qiujian16/sdk-go v0.0.0-20250306072939-17de68af9723
+# open-cluster-management.io/sdk-go v0.15.1-0.20241125015855-1536c3970f8f => github.com/morvencao/ocm-sdk-go v0.0.0-20250317035627-d1a1bfe0dcde
 ## explicit; go 1.22.0
 open-cluster-management.io/sdk-go/pkg/apis/cluster/v1alpha1
 open-cluster-management.io/sdk-go/pkg/apis/cluster/v1beta1
@@ -1788,7 +1788,17 @@ open-cluster-management.io/sdk-go/pkg/apis/work/v1/validator
 open-cluster-management.io/sdk-go/pkg/basecontroller/events
 open-cluster-management.io/sdk-go/pkg/basecontroller/factory
 open-cluster-management.io/sdk-go/pkg/certrotation
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/client
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/codec
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/internal
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/lister
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/statushash
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/store
+open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/utils
+open-cluster-management.io/sdk-go/pkg/cloudevents/common
 open-cluster-management.io/sdk-go/pkg/cloudevents/constants
+open-cluster-management.io/sdk-go/pkg/cloudevents/errors
 open-cluster-management.io/sdk-go/pkg/cloudevents/generic
 open-cluster-management.io/sdk-go/pkg/cloudevents/generic/options
 open-cluster-management.io/sdk-go/pkg/cloudevents/generic/options/cert
@@ -1806,7 +1816,6 @@ open-cluster-management.io/sdk-go/pkg/cloudevents/work/agent/client
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/agent/codec
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/agent/lister
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/common
-open-cluster-management.io/sdk-go/pkg/cloudevents/work/errors
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/internal
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/payload
 open-cluster-management.io/sdk-go/pkg/cloudevents/work/source/client
@@ -1909,4 +1918,4 @@ sigs.k8s.io/structured-merge-diff/v4/value
 ## explicit; go 1.12
 sigs.k8s.io/yaml
 sigs.k8s.io/yaml/goyaml.v2
-# open-cluster-management.io/sdk-go => github.com/qiujian16/sdk-go v0.0.0-20250306072939-17de68af9723
+# open-cluster-management.io/sdk-go => github.com/morvencao/ocm-sdk-go v0.0.0-20250317035627-d1a1bfe0dcde

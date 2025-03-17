@@ -19,6 +19,9 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog/v2"
 
+	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/codec"
+	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic"
+
 	addonclient "open-cluster-management.io/api/client/addon/clientset/versioned"
 	addoninformers "open-cluster-management.io/api/client/addon/informers/externalversions"
 	clusterv1client "open-cluster-management.io/api/client/cluster/clientset/versioned"
@@ -37,6 +40,9 @@ import (
 	"open-cluster-management.io/ocm/pkg/registration/spoke/lease"
 	"open-cluster-management.io/ocm/pkg/registration/spoke/managedcluster"
 	"open-cluster-management.io/ocm/pkg/registration/spoke/registration"
+
+	cloudeventscluster "open-cluster-management.io/sdk-go/pkg/cloudevents/cluster"
+	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/store"
 )
 
 // AddOnLeaseControllerSyncInterval is exposed so that integration tests can crank up the controller sync speed.
@@ -237,9 +243,35 @@ func (o *SpokeAgentConfig) RunSpokeAgentWithSpokeInformers(ctx context.Context,
 	if err != nil {
 		return err
 	}
-	bootstrapClusterClient, err := clusterv1client.NewForConfig(bootstrapClientConfig)
-	if err != nil {
-		return err
+
+	var bootstrapClusterClient clusterv1client.Interface
+	var watcherStore *store.AgentInformerWatcherStore
+	if o.registrationOption.HubRegistrationDriver != "kube" {
+		// For cloudevents drivers, we build hub client based on different driver configuration.
+		watcherStore = store.NewAgentInformerWatcherStore()
+		_, config, err := generic.NewConfigLoader(o.registrationOption.HubRegistrationDriver, o.registrationOption.HubBootstrapConfig).
+			LoadConfig()
+		if err != nil {
+			return fmt.Errorf("failed to load hub registration config from file %q: %w", o.registrationOption.HubBootstrapConfig, err)
+		}
+
+		clientHolder, err := cloudeventscluster.NewClientHolderBuilder(config).
+			WithClientID(o.agentOptions.SpokeClusterName).
+			WithClusterName(o.agentOptions.SpokeClusterName).
+			WithCodec(codec.NewManagedClusterCodec()).
+			WithClusterClientWatcherStore(watcherStore).
+			NewAgentClientHolder(ctx)
+		if err != nil {
+			return err
+		}
+
+		bootstrapClusterClient = clientHolder.ClusterInterface()
+	} else {
+		var err error
+		bootstrapClusterClient, err = clusterv1client.NewForConfig(bootstrapClientConfig)
+		if err != nil {
+			return err
+		}
 	}
 
 	// start a SpokeClusterCreatingController to make sure there is a spoke cluster on hub cluster
@@ -325,6 +357,10 @@ func (o *SpokeAgentConfig) RunSpokeAgentWithSpokeInformers(ctx context.Context,
 		)
 		if err != nil {
 			return err
+		}
+
+		if watcherStore != nil {
+			watcherStore.SetInformer(bootstrapClusterInformerFactory.Cluster().V1().ManagedClusters().Informer())
 		}
 
 		controllerName := fmt.Sprintf("BootstrapController@cluster:%s", o.agentOptions.SpokeClusterName)
